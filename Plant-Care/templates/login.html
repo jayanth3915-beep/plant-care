@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Plant Doctor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background: linear-gradient(to right, #11998e, #38ef7d); height: 100vh; display: flex; align-items: center; }
+        .login-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .feature-list { background: #f8f9fa; padding: 30px; }
+        .feature-item { margin-bottom: 15px; display: flex; align-items: center; }
+        .feature-item i { font-size: 1.5rem; color: #28a745; margin-right: 15px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="row login-card">
+                <div class="col-md-6 feature-list">
+                    <h2 class="fw-bold mb-4">Why choose AI Plant Doctor?</h2>
+                    <div class="feature-item"><i class="bi bi-cpu"></i> <span><strong>Instant Diagnosis:</strong> 38+ plant diseases identified in seconds.</span></div>
+                    <div class="feature-item"><i class="bi bi-chat-dots"></i> <span><strong>Groq AI Integration:</strong> Expert treatment tips using Llama-3.</span></div>
+                    <div class="feature-item"><i class="bi bi-translate"></i> <span><strong>Multilingual Support:</strong> Advice in English, Hindi, and Telugu.</span></div>
+                    <div class="feature-item"><i class="bi bi-volume-up"></i> <span><strong>Voice Enabled:</strong> Listen to cures in your native language.</span></div>
+                </div>
+                <div class="col-md-6 p-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-leaf" style="font-size: 3rem; color: #28a745;"></i>
+                        <h3 class="fw-bold">Welcome Back</h3>
+                        <p class="text-muted">Login to start scanning your plants</p>
+                    </div>
+                    <form action="/login_action" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email" class="form-control" placeholder="name@example.com" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100 btn-lg shadow">Login & Continue</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

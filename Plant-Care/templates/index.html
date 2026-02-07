@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Plant Doctor - Analyzer</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body { background-color: #f4fdf4; font-family: 'Segoe UI', sans-serif; }
+        .main-card { border: none; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: white; overflow: hidden; margin-top: 50px; position: relative; }
+        .header { background: linear-gradient(135deg, #1d976c, #93f9b9); color: white; padding: 40px; }
+        .upload-area { padding: 40px; }
+        .result-img { width: 100%; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .advice-box { background: #f9fff9; border-left: 6px solid #28a745; border-radius: 15px; padding: 25px; text-align: left; }
+        #loader { display: none; }
+        .logout-btn { position: absolute; top: 10px; right: 10px; color: white; border: 1px solid white; border-radius: 10px; padding: 5px 10px; text-decoration: none; font-size: 0.8rem; }
+        .logout-btn:hover { background: white; color: #1d976c; }
+    </style>
+</head>
+<body>
+
+<div class="container mb-5">
+    <div class="main-card mx-auto" style="max-width: 900px;">
+        <a href="/logout" class="logout-btn"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        <div class="header text-center">
+            <h1><i class="bi bi-robot"></i> AI Plant Pathologist</h1>
+            <p>Ready to help, {{ session['user'] }}</p>
+        </div>
+
+        <div class="upload-area">
+            {% if not prediction %}
+            <form action="/predict" method="post" enctype="multipart/form-data" onsubmit="showLoader()">
+                <div class="mb-4">
+                    <label class="form-label fw-bold">1. Upload Leaf Photo</label>
+                    <input type="file" name="file" class="form-control form-control-lg" accept="image/*" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold">2. Select Advice Language</label>
+                    <select name="language" class="form-select">
+                        <option value="English">English</option>
+                        <option value="Hindi">Hindi (हिन्दी)</option>
+                        <option value="Telugu">Telugu (తెలుగు)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold">ANALYZE NOW</button>
+                <div id="loader" class="text-center mt-3 text-success">
+                    <div class="spinner-border spinner-border-sm"></div> Analyzing & generating tips...
+                </div>
+            </form>
+            {% endif %}
+
+            {% if prediction %}
+            <div class="text-center">
+                <h1 class="text-success fw-bold">{{ prediction }}</h1>
+                <span class="badge bg-dark rounded-pill px-3 py-2 mb-4">Confidence: {{ confidence }}%</span>
+
+                <div class="row g-4 text-start">
+                    <div class="col-md-5">
+                        <img src="{{ image_path }}" class="result-img">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="advice-box">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="mb-0 text-success fw-bold">Expert Cure Tips</h4>
+                                <div>
+                                    <button class="btn btn-warning btn-sm fw-bold" onclick="speak()">
+                                        <i class="bi bi-volume-up"></i> Play Audio
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" onclick="window.speechSynthesis.cancel()">
+                                        <i class="bi bi-stop-circle"></i> Stop
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="textToSpeak" style="white-space: pre-line; font-size: 1.1rem;">{{ advice }}</div>
+                        </div>
+                    </div>
+                </div>
+                <a href="/uploader" class="btn btn-outline-success mt-5 px-5 rounded-pill">New Scan</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function showLoader() { document.getElementById('loader').style.display = 'block'; }
+
+    function speak() {
+        window.speechSynthesis.cancel();
+        const text = document.getElementById('textToSpeak').innerText;
+        const utterance = new SpeechSynthesisUtterance(text);
+        
+        const langCode = "{{ selected_lang }}";
+        
+        // Language Mapping
+        if (langCode === "Hindi") utterance.lang = 'hi-IN';
+        else if (langCode === "Telugu") utterance.lang = 'te-IN';
+        else utterance.lang = 'en-US';
+
+        // Fix for Telugu/Hindi: Force voice selection if multiple are installed
+        const voices = window.speechSynthesis.getVoices();
+        const matchedVoice = voices.find(v => v.lang.startsWith(utterance.lang.split('-')[0]));
+        if (matchedVoice) utterance.voice = matchedVoice;
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // Load voices early (Required for some browsers)
+    window.speechSynthesis.getVoices();
+</script>
+
+</body>
+</html>
